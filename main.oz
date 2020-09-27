@@ -109,8 +109,35 @@ define
 
     {System.showInfo '\nTask 2'}
     {System.showInfo 'Running {MyList.sum [1 2 3 4 5]}: '#{MyList.sum [1 2 3 4 5]}}
-     
-    {System.showInfo '\nTask 3'}
+
+    {System.showInfo '\nTask 3abc, please see comments in source code'}
+    % Task 3b: Relevant comments is under and in list.oz in the RightFold function
+    local 
+        % Here we define variable 'Sum' to the given anonymous function 
+        Sum =   fun {$ Head Other} 
+                    Head + Other
+                end
+
+        % Here we define variable 'Length' to the given anonymous function 
+        Length =    fun {$ Head Other}
+                        1 + Other
+                    end
+
+        TestList = [0 1 2 3 4]
+    in 
+        {System.show 'Running RightFold with '#TestList}
+        {System.showInfo 'Running RightFold with sum: '#{MyList.rightFold TestList Sum 0}}
+        {System.showInfo 'Running RightFold with length: '#{MyList.rightFold TestList Length 0}}
+    end
+
+    {System.showInfo '\nTask 3d, please see comments in source code'}
+    % For Sum and Length it does not matter, even with negative values
+    % Sum: (5 + (2 + (-4 + 4))) ==  (((5 + 2) + -4) + 4) == 7
+    % Length: (((1 + 1) + 1) + 1) == (1 + (1 + (1 + 1))) == 4 
+
+    {System.showInfo '\nTask 3e, please see comments in source code'}
+    % For product you would want 1 as U 
+    % {Product [1 2 3]} = (1 * (2 * (3 * 1))) = 6
 
     {Exit 0}
 end

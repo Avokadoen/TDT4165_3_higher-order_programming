@@ -1,6 +1,7 @@
 % We create a module. See http://mozart2.org/mozart-v1/doc-1.4.0/tutorial/node7.html#chapter.modules
 functor
 export
+    rightFold:RightFold
     length:Length
     sum:Sum
     take:Take
@@ -8,7 +9,21 @@ export
     append:Append
     position:Position
     member:Member
-define  
+define
+    fun {RightFold L Op U} 
+        % Check if list is not empty
+        case L of Head|Tail then
+            % We calculate our incremental value on the left by calling
+            % the function that Op variable is pointing at.
+            % Then we call RightFold recursivly on the right hand side.
+            % This way the operation is computed from the right to the left
+            {Op Head {RightFold Tail Op U}}
+        else
+            % If list is empty we return U
+            U
+        end
+    end
+
     fun {Length L}
         case L of Head|Tail then
             1 + {Length Tail}
