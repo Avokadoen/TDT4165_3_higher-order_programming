@@ -12,7 +12,6 @@ define
             D = {Pow B 2.0} - 4.0 * A * C
         in
             RealSol = D >= 0.0
-            % TODO: find out how to get 'and' inn if to avoid rounding error
             if RealSol then
                 local 
                     SqrtResult = {Sqrt D}
@@ -139,5 +138,105 @@ define
     % For product you would want 1 as U 
     % {Product [1 2 3]} = (1 * (2 * (3 * 1))) = 6
 
+    {System.showInfo '\nTask 4'}
+    fun {Quadratic A B C}
+        fun {$ X}
+            % We return a function that keeps A B C in it's scope, and takes a new
+            % variable X
+            A * {Pow X 2} + B * X + C 
+        end
+    end
+    {System.showInfo 'Running {{Quadratic 3 2 1} 2}: '#{{Quadratic 3 2 1} 2}}
+
+    {System.showInfo '\nTask 5a'}
+    fun {LazyNumberGenerator StartValue}
+        local 
+            % A local function that will simply call the main
+            % function with incremental start value
+            fun {InternalLazy}
+                {LazyNumberGenerator (StartValue + 1)}
+            end
+        in
+            % The function returns a tuple that holds the value that the function was supplied
+            % It also holds the pointer to our internal function. This allows callers
+            % of LazyNumberGenerator to call the returned tuple .2 value to increment 
+            % 
+            lazynumbergenerator(StartValue InternalLazy)
+        end
+    end
+    {System.showInfo 'Running {LazyNumberGenerator 0}.1: '#{LazyNumberGenerator 0}.1}
+    {System.showInfo 'Running {{LazyNumberGenerator 0}.2}.1: '#{{LazyNumberGenerator 0}.2}.1}
+    {System.showInfo 'Running {{{{{{LazyNumberGenerator 0}.2}.2}.2}.2}.2}.1: '#{{{{{{LazyNumberGenerator 0}.2}.2}.2}.2}.2}.1}
+    
+    {System.showInfo '\nTask 5b, please see comments in source code'}
+    % Please see comments in LazyNumberGenerator definition.
+
+    % One limitation of this abstraction is performance in a lot of use cases.
+    % i.e If you want to repeatedly loop from 1 to 1000 you will create a lot
+    % of extra garbage as we construct a tuple and a closjure for each iteration
+    % if the language don't utilize certain optimization, it will also do
+    % a lot of unnecessary stack allocation as this is something that happens each
+    % time a program enters a function.
+
+    % Another limitation of *this specific* implementation is that iterating large amounts
+    % is very verbose.  
+
+    {System.showInfo '\nTask 6a, please see comments in source code'}
+    % No, my current implementation is not tail recursive:
+    % fun {Sum L}
+    %     case L of Head|Tail then
+    %         Head + {Sum Tail}
+    %     else
+    %         0
+    %     end
+    % end 
+    % If we call Sum with [1 2 3 4], we get the following
+    % 1 + {Sum [2 3 4]}
+    % 1 + 2 + {Sum [3 4]}
+    % 1 + 2 + 3 + {Sum [4]}
+    % 1 + 2 + 3 + 4 + {Sum nil|}
+    % 1 + 2 + 3 + 4 + 0
+    % 1 + 2 + 3 + 4
+    % 1 + 2 + 7
+    % 1 + 9
+    % 10
+    % Notice the pyramid shape as we grow our expression, this
+    % can be very bad if you want to run your code at scale.
+    % to fix this we can defined sum as i have with MyList.SumTR
+    % which can be found in list.oz. It has the following definition:
+    % fun {SumTR L}
+    %     local 
+    %         fun {Go Sum L}
+    %             case L of Head|Tail then
+    %                 {Go Head + Sum Tail}
+    %             else
+    %                 Sum
+    %             end
+    %         end
+    %     in 
+    %         {Go 0 L}
+    %     end
+    % end
+    % If we call SumTR on [1 2 3 4], we get the following
+    % {Go 0 [1 2 3 4]}
+    % {Go 1 [2 3 4]}
+    % {Go 3 [3 4]}
+    % {Go 6 [4]}
+    % {Go 10 nil|}
+    % + unwinding with 10 (which some/most language compilers can optimize away)
+    {System.showInfo 'Running {MyList.sumTR [1 2 3 4]}: '#{MyList.sumTR [1 2 3 4]}}
+    
+    {System.showInfo '\nTask 6b, please see comments in source code'}
+    % The benefit here is performance, mainly in memory useage, but as I said,
+    % it can help the compiler do further optimizations i.e avoid stack hammering with stack frames
+
+    {System.showInfo '\nTask 6c, please see comments in source code'}
+    % Yes, and no. You can benefit without further optimizations done by the compiler
+    % as the memory useage can be reduces. You will still get problems with 
+    % blowing your stack among other things if the compiler is not capable of utilizing tail recursion
+    % optimizations. 
+
+    % So in other words: the major gains from tail recursion comes from the compilers 
+    % optimizing the output code, but not all gains comes from the just compiler.
     {Exit 0}
 end

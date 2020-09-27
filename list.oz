@@ -4,6 +4,7 @@ export
     rightFold:RightFold
     length:Length
     sum:Sum
+    sumTR:SumTR
     take:Take
     drop:Drop
     append:Append
@@ -37,6 +38,20 @@ define
             Head + {Sum Tail}
         else
             0
+        end
+    end
+
+    fun {SumTR L}
+        local 
+            fun {Go Sum L}
+                case L of Head|Tail then
+                    {Go Head + Sum Tail}
+                else
+                    Sum
+                end
+            end
+        in 
+            {Go 0 L}
         end
     end
 
