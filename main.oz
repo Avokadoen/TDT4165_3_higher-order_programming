@@ -65,9 +65,22 @@ define
     end
     
     % Task 1b) Why are procedural abstractions useful?  Give at least two reasons
-    
+    {System.showInfo 'See comments for answer of Task 1b'}
+    % Procedural abstraction is useful for countless reasons. One of the main reasons is to avoid
+    % duplicate code. Duplicate code is bad as it can lead to unnecessary bugs as you copy your code around in your codebase. 
+    % It becomes harder to maintain as changes to the code blocks are required multiple places in your codebase instead of in the procedure block.
+    % Procedural abstraction is also useful for encapsulation, and opens for the possibility to use the countless patterns
+    % that utilize procedures. Recursion, Currying (https://en.wikipedia.org/wiki/Currying), etc …
+    % Function pointers are also very useful. Example of a good use-case is input bindings. 
+    % The program can have a set of bindable procedures, and then the user can configure which keys
+    % that points to which procedure.   
+
+
+    % Task 1c) What is the difference between a procedure and a function?
+    {System.showInfo 'See comments for answer of Task 1c'}
     % Procedures is a companion feature with functions in OZ. It *seems* one should use functions 
     % when you are making something that should take in data, and return a produced output.
+    % Functions are in other words reserved for pure function oriented code. 
     % Procedures in turn seem to fit when you want side effects or no internal effect.
     % Unlike OZ, C only has function. A C function signature looks like:
     % int max(int num1, int num2) { /* code */ }
@@ -90,6 +103,14 @@ define
     %         Z
     %     in 
     %       {Max X Y Z} {Browse Z}
-    %     end    
+    %     end 
+    % Example of no internal side effect could be a procedure that creates a file 
+    % and does not report the outcome of the operation  
+
+    {System.showInfo '\nTask 2'}
+    {System.showInfo 'Running {MyList.sum [1 2 3 4 5]}: '#{MyList.sum [1 2 3 4 5]}}
+     
+    {System.showInfo '\nTask 3'}
+
     {Exit 0}
 end

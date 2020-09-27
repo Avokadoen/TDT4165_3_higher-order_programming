@@ -2,6 +2,7 @@
 functor
 export
     length:Length
+    sum:Sum
     take:Take
     drop:Drop
     append:Append
@@ -11,6 +12,14 @@ define
     fun {Length L}
         case L of Head|Tail then
             1 + {Length Tail}
+        else
+            0
+        end
+    end
+
+    fun {Sum L}
+        case L of Head|Tail then
+            Head + {Sum Tail}
         else
             0
         end
